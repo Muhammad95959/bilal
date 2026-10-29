@@ -3,7 +3,8 @@ use std::{
     sync::Arc,
 };
 
-use misykat::{jiff::civil, salah::PrayerTimes};
+use jiff::civil;
+use crate::ptp::PrayerTimes;
 use owo_colors::{OwoColorize, Stream::Stdout};
 
 use crate::{
@@ -59,8 +60,9 @@ impl Printer {
     /// Show current prayer info
     pub fn current(&self) -> Result<(), crate::Error> {
         let prayers = self.prayers;
-        let prayer = prayers.current();
-        let (hour, minute) = prayers.time_remaining();
+        let now = jiff::Zoned::now().datetime();
+        let prayer = prayers.current(now);
+        let (hour, minute) = prayers.time_remaining(now);
 
         let remaining_fmt = {
             if hour == 0 {
@@ -102,7 +104,8 @@ impl Printer {
     /// Show next prayer info
     pub fn next(&self) -> Result<(), crate::Error> {
         let prayers = self.prayers;
-        let prayer = prayers.next();
+        let now = jiff::Zoned::now().datetime();
+        let prayer = prayers.next(now);
         let time = prayers.time(prayer);
         let time = self.format_time(time);
 

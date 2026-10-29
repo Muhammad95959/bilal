@@ -159,8 +159,8 @@ dependencies = [
  "assert_cmd",
  "assert_fs",
  "clap",
+ "jiff",
  "miette",
- "misykat",
  "owo-colors",
  "predicates",
  "rust-i18n",
@@ -567,16 +567,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fa76a2c86f704bdb222d66965fb3d63269ce38518b83cb0575fca855ebb6316"
 dependencies = [
  "adler2",
-]
-
-[[package]]
-name = "misykat"
-version = "4.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc401f207b8bb4b26d7b31c3a5c74e24a8c0eb51a1bdf0c4d6982e28b5e57789"
-dependencies = [
- "jiff",
- "thiserror",
 ]
 
 [[package]]

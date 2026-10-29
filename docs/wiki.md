@@ -9,25 +9,25 @@ In OSM, click the area, then select "show address".
 
 ### Method
 
-The methods in subsection are the similar methods.
-Available methods are:
+Bilal uses the prayer-time-plus engine, so all of its 50+ calculation methods are
+available. Pass either the method key (lowercase, e.g. `egypt`, `mwl`) or a
+case-insensitive name/alias (e.g. `Egyptian`, `MuslimWorldLeague`, `FixedInterval`).
 
-- `Karachi`: University of Islamic Sciences, Karachi (UISK). Fajr angle: 18.0, Isha angle: 18.0
-  - Ministry of Religious Affairs, Tunisia
-  - France - Angle 18°
-- `MuslimWorldLeague`: Muslim World League (MWL). Fajr angle: 18.0, Isha angle: 17.0
-  - Ministry of Religious Affairs and Awqaf, Algeria
-  - Presidency of Religious Affairs, Turkey
-- `Egyptian`: Egyptian General Authority of Survey (EGAS): 19.5, Isha angle: 17.5
-- `UmmAlQura`: Umm al-Qura University, Makkah (UMU). Fajr angle: 18.5, Isha interval: 90
-- `NorthAmerica`: Islamic Society of North America (ISNA). Fajr angle: 15.0, Isha angle: 15.0
-  - France - Angle 15°
-- `French`: French Muslims (ex-UOIF). Fajr angle: 12.0, Isha angle: 12.0
-- `Singapore`: Islamic Religious Council of Singapore (MUIS). Fajr angle: 20.0, Isha angle: 18.0
-  - Department of Islamic Advancements of Malaysia (JAKIM)
-  - Ministry of Religious Affairs of Indonesia (KEMENAG)
-- `Russia`: Spiritual Administration of Muslims of Russia. Fajr angle: 16.0, Isha angle: 15.0
-- `FixedInterval`: Fixed Ishaa Time Interval, 90min. Fajr angle: 19.5, Isha interval: 90 (ramdan: 120)
+Some common ones:
+
+- `mwl` / `MuslimWorldLeague` — Muslim World League
+- `egypt` / `Egyptian` — Egyptian General Authority of Survey
+- `makkah` / `UmmAlQura` — Umm al-Qura, Makkah
+- `isna` / `NorthAmerica` — Islamic Society of North America
+- `karachi` / `Karachi` — University of Islamic Sciences, Karachi
+- `turkey` / `Turkey` — Diyanet, Turkey
+- `indonesia` / `Indonesia` — Kemenag, Indonesia
+- `malaysia` / `Singapore` — JAKIM, Malaysia/Singapore
+- `moscow` / `Russia` — Moscow
+- `uoif` / `French` — UOIF, France
+- `fixedinterval` / `FixedInterval` — Fixed Isha interval (90 min)
+
+For the full list of keys see `src/ptp/data/methods.rs` (`method_keys()`).
 
 ### Madhab
 

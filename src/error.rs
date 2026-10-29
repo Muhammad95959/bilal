@@ -50,11 +50,6 @@ impl std::convert::From<std::env::VarError> for Error {
     }
 }
 
-impl std::convert::From<misykat::error::Error> for Error {
-    fn from(err: misykat::error::Error) -> Self {
-        Self::Internal(err.to_string())
-    }
-}
 
 impl std::convert::From<std::io::Error> for Error {
     fn from(err: std::io::Error) -> Self {
