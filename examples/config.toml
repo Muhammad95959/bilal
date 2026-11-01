@@ -7,3 +7,5 @@ method = "Egyptian"
 # Optional
 time_format = "24H" # or "12H"
 locale = "en" # or "id"
+city = "Jakarta" # optional, enables city-specific minute tweaks
+country_code = "ID" # optional, ISO-3166 alpha-2

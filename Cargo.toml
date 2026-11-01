@@ -20,7 +20,8 @@ panic = 'abort'
 [dependencies]
 # prayer-time calculation (pure Rust port of prayer-time-plus)
 jiff = "0.2"
-
+unicode-normalization = "0.1"
+finl_unicode = { version = "1.5", features = ["categories"] }
 # cli
 clap = { version = "4.5", features = ["suggestions", "color", "cargo", "derive"] }
 owo-colors = { version = "4", features = ["supports-colors"] }

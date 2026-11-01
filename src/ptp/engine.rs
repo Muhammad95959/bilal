@@ -173,7 +173,6 @@ impl PrayerTimeCalculator {
 
     fn night_portion(&self, rule: HighLatitudeRule, angle: f64) -> f64 {
         match rule {
-            HighLatitudeRule::Automatic => SEVENTH_PORTION,
             HighLatitudeRule::None => 0.0,
             HighLatitudeRule::MiddleOfTheNight => MIDDLE_PORTION,
             HighLatitudeRule::SeventhOfTheNight => SEVENTH_PORTION,
@@ -192,25 +191,7 @@ pub fn compute_prayer_times(
     // returns (fajr, sunrise, dhuhr, asr, sunset, maghrib, isha) as minutes-of-day? No, fractional hours.
     let calc = PrayerTimeCalculator::new(coords, date, parameters, country_code, utc_offset_hours);
     let rule = parameters.high_latitude_rule;
-    let first_pass = if rule == HighLatitudeRule::Automatic {
-        calc.compute(HighLatitudeRule::None)
-    } else {
-        calc.compute(rule)
-    };
-    let resolved = if rule == HighLatitudeRule::Automatic {
-        let fajr_min = rounded_minute_of_day(first_pass.fajr);
-        let isha_min = rounded_minute_of_day(first_pass.isha);
-        let fajr_broken = fajr_min.is_none() || fajr_min == Some(0);
-        let isha_hour = isha_min.map(|m| m / 60);
-        let isha_broken = isha_hour.is_none() || isha_hour == Some(0) || isha_hour == Some(12);
-        if fajr_broken || isha_broken {
-            calc.compute(HighLatitudeRule::SeventhOfTheNight)
-        } else {
-            first_pass
-        }
-    } else {
-        first_pass
-    };
+    let resolved = calc.compute(rule);
     (resolved.fajr, resolved.sunrise, resolved.dhuhr, resolved.asr, resolved.sunset, resolved.maghrib, resolved.isha)
 }
 

@@ -17,7 +17,6 @@ impl Madhab {
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum HighLatitudeRule {
-    Automatic,
     None,
     MiddleOfTheNight,
     SeventhOfTheNight,

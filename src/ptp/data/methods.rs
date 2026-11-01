@@ -97,7 +97,7 @@ pub fn params_for(key: &'static str, madhab: Madhab) -> CalculationParameters {
         },
         adjustments: PrayerAdjustments::default(),
         madhab,
-        high_latitude_rule: crate::ptp::types::HighLatitudeRule::Automatic,
+        high_latitude_rule: crate::ptp::types::HighLatitudeRule::MiddleOfTheNight,
         is_ramadan: false,
     }
 }

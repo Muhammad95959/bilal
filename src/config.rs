@@ -20,6 +20,12 @@ pub struct Config {
     /// Available languages: en, id
     #[serde(default = "default_locale")]
     pub locale: String,
+    /// Optional city name; used for city-specific prayer minute tweaks.
+    #[serde(default)]
+    pub city: Option<String>,
+    /// Optional ISO-3166 alpha-2 country code.
+    #[serde(default)]
+    pub country_code: Option<String>,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]

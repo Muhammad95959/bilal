@@ -56,7 +56,7 @@ fn params_for(key: &'static str, m: ptp::Madhab) -> ptp::CalculationParameters {
             method_adjustments: ptp::PrayerAdjustments::default(),
             adjustments: ptp::PrayerAdjustments::default(),
             madhab: m,
-            high_latitude_rule: ptp::HighLatitudeRule::Automatic,
+            high_latitude_rule: ptp::HighLatitudeRule::MiddleOfTheNight,
             is_ramadan: false,
         }
     } else {
@@ -72,6 +72,8 @@ pub fn all(config: Arc<Config>) -> Result<ptp::PrayerTimes, Error> {
     let m = madhab(&config.madhab)?;
     let params = params_for(key, m);
 
+    let country_code = config.country_code.clone().unwrap_or_default();
+
     let now_zoned = Zoned::now();
     let utc_offset_hours = now_zoned.offset().seconds() as f64 / 3600.0;
     let today_date = now_zoned.datetime().date();
@@ -80,7 +82,7 @@ pub fn all(config: Arc<Config>) -> Result<ptp::PrayerTimes, Error> {
     let coords = ptp::Coordinates { latitude, longitude, altitude: 0.0 };
 
     let (fajr, sunrise, dhuhr, asr, _sunset, maghrib, isha) =
-        ptp::compute_prayer_times(coords, dc, params, utc_offset_hours, "");
+        ptp::compute_prayer_times(coords, dc, params, utc_offset_hours, &country_code);
 
     let to_dt = |frac: f64, date: Date| -> DateTime {
         let minute = rounded_minute_of_day(frac).unwrap_or(0);
@@ -89,18 +91,38 @@ pub fn all(config: Arc<Config>) -> Result<ptp::PrayerTimes, Error> {
         date.at(h, mi, 0, 0)
     };
 
-    let fajr_dt = to_dt(fajr, today_date);
-    let sherook_dt = to_dt(sunrise, today_date);
-    let dohr_dt = to_dt(dhuhr, today_date);
-    let asr_dt = to_dt(asr, today_date);
-    let maghreb_dt = to_dt(maghrib, today_date);
-    let ishaa_dt = to_dt(isha, today_date);
+    let mut fajr_dt = to_dt(fajr, today_date);
+    let mut sherook_dt = to_dt(sunrise, today_date);
+    let mut dohr_dt = to_dt(dhuhr, today_date);
+    let mut asr_dt = to_dt(asr, today_date);
+    let mut maghreb_dt = to_dt(maghrib, today_date);
+    let mut ishaa_dt = to_dt(isha, today_date);
+
+    // city-specific minute tweaks
+    let deltas = config
+        .city
+        .as_ref()
+        .and_then(|c| ptp::city_tweaks(key, c));
+    if let Some(d) = deltas {
+        let shift = |dt: DateTime, mins: i32| -> DateTime {
+            if mins == 0 { dt } else { dt + Span::new().minutes(mins as i64) }
+        };
+        fajr_dt = shift(fajr_dt, d[0]);
+        sherook_dt = shift(sherook_dt, d[1]);
+        dohr_dt = shift(dohr_dt, d[2]);
+        asr_dt = shift(asr_dt, d[3]);
+        maghreb_dt = shift(maghreb_dt, d[5]);
+        ishaa_dt = shift(ishaa_dt, d[6]);
+    }
 
     // tomorrow's fajr
     let tomorrow_date = today_date.tomorrow().unwrap();
     let dc_tom = ptp::DateComponents::from_date(tomorrow_date);
-    let (fajr_tom, ..) = ptp::compute_prayer_times(coords, dc_tom, params, utc_offset_hours, "");
-    let fajr_tomorrow_dt = to_dt(fajr_tom, tomorrow_date);
+    let (fajr_tom, ..) = ptp::compute_prayer_times(coords, dc_tom, params, utc_offset_hours, &country_code);
+    let mut fajr_tomorrow_dt = to_dt(fajr_tom, tomorrow_date);
+    if let Some(d) = deltas && d[0] != 0 {
+        fajr_tomorrow_dt += Span::new().minutes(d[0] as i64);
+    }
 
     // sunnah times
     let mag_min = maghreb_dt.hour() as i64 * 60 + maghreb_dt.minute() as i64;
